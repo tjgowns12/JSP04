@@ -1,0 +1,45 @@
+<%@page import="java.sql.SQLIntegrityConstraintViolationException"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.PreparedStatement"%>
+<%@page import="java.sql.DriverManager"%>
+<%@page import="java.sql.Connection"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<%
+Class.forName("oracle.jdbc.driver.OracleDriver");
+String url="jdbc:oracle:thin:@192.168.0.58:1521:xe";
+String id ="jsp",pwd="1234";
+Connection con=DriverManager.getConnection(url,id,pwd);
+String sql = "insert into members values(?,?,?,?,?)";
+String sql2="select id from members where id='"+request.getParameter("id")+"'";
+PreparedStatement ps=con.prepareStatement(sql2);
+ResultSet rs=ps.executeQuery();%>
+<%if(rs.next()) {%>
+<script>
+alert("등록된 아이디 입니다!!");
+location.href="register.jsp";
+</script>
+<%}%><%else{ 
+PreparedStatement pss=con.prepareStatement(sql);
+pss.setString(1,request.getParameter("id"));
+pss.setString(2,request.getParameter("pwd"));
+pss.setString(3,request.getParameter("name") );
+pss.setString(4,request.getParameter("addr") );
+pss.setString(5,request.getParameter("tel") );
+pss.executeUpdate();
+%>
+<script type="text/javascript">
+alert("회원가입을 축하합니다");
+location.href="login.jsp";
+</script>
+<%} %> 
+
+
+
+</body>
+</html>
